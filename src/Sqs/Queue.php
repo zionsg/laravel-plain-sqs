@@ -60,6 +60,8 @@ class Queue extends SqsQueue
         $response = $this->sqs->receiveMessage([
             'QueueUrl' => $queue,
             'AttributeNames' => ['ApproximateReceiveCount'],
+            'MaxNumberOfMessages' => 1, // be explicit in retrieving exactly 1 job
+            'VisibilityTimeout' => 3600, // allow 1 hour of processing else cannot delete later if ReceiptHandle expires
         ]);
 
         if (isset($response['Messages']) && count($response['Messages']) > 0) {
